@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Shop AI - Premium E-Commerce Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap%22 rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+ 
+        :root {
+            --primary-color: #6b7280;
+            --primary-dark: #4b5563;
+            --bg-light: #ffffff;
+            --bg-darker: #f3f4f6;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --border-color: #e5e7eb;
+            --success-color: #9ca3af;
+            --warning-color: #d1d5db;
+            --danger-color: #9ca3af;
+        }
+ 
+        html {
+            scroll-behavior: smooth;
+        }
+ 
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f9fafb;
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.6;
+            letter-spacing: 0.3px;
+        }
+ 
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: #f7f7f7;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #d1d5db;
+            transition: transform 0.3s ease;
+        }
+ 
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+ 
+        /* New Chat Button */
+        .new-chat-btn {
+            margin: 12px;
+            padding: 12px 16px;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            color: #0d0d0d;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+ 
+        .new-chat-btn:hover {
+            background: #f0f0f0;
+            border-color: #b3b3b3;
+        }
+ 
+        /* Chat History */
+        .chat-history {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+ 
+        .chat-history::-webkit-scrollbar {
+            width: 6px;
+        }
+ 
+        .chat-history::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+        }
+ 
+        .history-item {
+            padding: 10px 12px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            transition: all 0.2s;
+            position: relative;
+        }
+ 
+        .history-item:hover {
+            background: #f0f0f0;
+        }
+ 
+        .history-item.active {
+            background: #e0e0e0;
+        }
+ 
+        .history-item-content {
+            flex: 1;
+            overflow: hidden;
+        }
+ 
+        .history-item-title {
+            font-size: 13px;
+            color: #0d0d0d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+ 
+        .history-item-date {
+            font-size: 11px;
+            color: #666666;
+            margin-top: 2px;
+        }
+ 
+        .history-item-actions {
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
+ 
+        .history-item:hover .history-item-actions {
+            display: flex;
+        }
+ 
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #999999;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+ 
+        .delete-btn:hover {
+            background: #ff4444;
+            color: white;
+        }
+ 
+        /* Sidebar Footer */
+        .sidebar-footer {
+            padding: 12px;
+            border-top: 1px solid #d1d5db;
+            font-size: 12px;
+            color: #666666;
+        }
+ 
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+ 
+        /* Header */
+        .header-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 20px;
+            border-bottom: 1px solid #d1d5db;
+            background: #ffffff;
+        }
+ 
+        .toggle-sidebar-btn {
+            background: transparent;
+            border: none;
+            color: #0d0d0d;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: none;
+        }
+ 
+        .toggle-sidebar-btn:hover {
+            background: #f0f0f0;
+        }
+ 
+        .header-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0d0d0d;
+            flex: 1;
+        }
+ 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+ 
+        .clear-chat-btn {
+            background: transparent;
+            border: 1px solid #d1d5db;
+            color: #0d0d0d;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+ 
+        .clear-chat-btn:hover {
+            background: #f0f0f0;
+            border-color: #000000;
+        }
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #ffffff;
+            scroll-behavior: smooth;
+        }
+ 
+        .chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+ 
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+ 
+        .chat-messages {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+ 
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+ 
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+ 
+        .empty-state-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #0d0d0d;
+        }
+ 
+        .empty-state-text {
+            font-size: 14px;
+            color: #666666;
+            line-height: 1.6;
+        }
+ 
+        /* Messages */
+        .message {
+            margin-bottom: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+ 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+ 
+        .message-wrapper {
+            padding: 12px 16px;
+            border-radius: 12px;
+        }
+ 
+        .user-message .message-wrapper {
+            background: #f0f0f0;
+            color: #0d0d0d;
+            margin-left: 60px;
+            text-align: right;
+        }
+ 
+        .assistant-message .message-wrapper {
+            background: transparent;
+            color: #0d0d0d;
+            margin-right: 0;
+            margin-left: 0;
+            padding: 0;
+        }
+
+        .assistant-message .message-label {
+            display: none;
+        }
+ 
+        .user-message .message-label {
+            justify-content: flex-end;
+            color: #0d0d0d;
+        }
+ 
+        .message-label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+ 
+        .message-content {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+ 
+        /* Uploaded Image */
+        .uploaded-image {
+            max-width: 300px;
+            border-radius: 8px;
+            margin-top: 8px;
+            border: none;
+            display: block;
+        }
+
+        /* When a message contains only an image, remove the bubble background */
+        .message-wrapper.no-bubble {
+            background: transparent !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        .message-wrapper.no-bubble .uploaded-image {
+            margin-top: 0;
+            border-radius: 8px;
+        }
+
+        /* Align image-only user messages to the right and hide the label */
+        .user-message .message-wrapper.no-bubble {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .user-message .message-wrapper.no-bubble .message-label {
+            display: none;
+        }
+
+        .user-message .message-wrapper.no-bubble .uploaded-image {
+            margin: 0;
+            max-width: 320px;
+        }
+
+        /* Style uploaded image card */
+        .uploaded-image-card {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            max-width: 320px;
+        }
+
+        .uploaded-image-card .uploaded-image {
+            max-width: 300px;
+            max-height: 250px;
+            border-radius: 8px;
+        }
+
+        .uploaded-image-filename {
+            color: #666666;
+            font-size: 11px;
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+            text-align: right;
+        }
+ 
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+ 
+        .result-item {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #ffffff;
+            transition: all 0.2s;
+        }
+ 
+        .result-item:hover {
+            transform: translateY(-2px);
+            border-color: #000000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+ 
+        .result-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+ 
+        .result-info {
+            padding: 12px;
+            font-size: 12px;
+            color: #0d0d0d;
+        }
+ 
+        .similarity-score {
+            font-weight: 700;
+            color: #6b7280;
+        }
+
+        .result-filename {
+            color: #666666;
+            margin-top: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 11px;
+        }
+
+        .result-description {
+            color: #1f2937;
+            font-size: 13px;
+            line-height: 1.4;
+            font-weight: 500;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+ 
+        /* Loading */
+        .loading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666666;
+            font-size: 14px;
+        }
+ 
+        .loading-dots {
+            display: flex;
+            gap: 4px;
+        }
+ 
+        .loading-dot {
+            width: 6px;
+            height: 6px;
+            background: #000000;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+ 
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+ 
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+ 
+        /* Input Area */
+        .input-area {
+            border-top: 1px solid #d1d5db;
+            padding: 20px;
+            background: #ffffff;
+        }
+ 
+        .input-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: #f7f7f7;
+            border: 1px solid #d1d5db;
+            transition: all 0.2s;
+        }
+ 
+        .input-container:focus-within {
+            border-color: #000000;
+            background: #ffffff;
+        }
+ 
+        .file-input-wrapper {
+            position: relative;
+        }
+ 
+        .upload-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s;
+            color: #0d0d0d;
+        }
+ 
+        .upload-btn:hover {
+            background: #e0e0e0;
+        }
+ 
+        input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+        }
+ 
+        .text-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            font-family: inherit;
+            color: #0d0d0d;
+            background: transparent;
+        }
+ 
+        .text-input::placeholder {
+            color: #999999;
+        }
+ 
+        .send-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s;
+        }
+ 
+        .send-btn:hover:not(:disabled) {
+            background: #4b5563;
+        }
+ 
+        .send-btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+ 
+        /* Error Message */
+        .error-message {
+            padding: 12px 16px;
+            background: #ffcccc;
+            border: 1px solid #ff4444;
+            border-radius: 8px;
+            color: #660000;
+            font-size: 14px;
+        }
+ 
+        /* Image Analysis Details */
+        .analysis-details {
+            background: #f0f0f0;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+ 
+        .analysis-item {
+            margin-bottom: 8px;
+        }
+ 
+        .analysis-label {
+            color: #666666;
+            margin-right: 8px;
+            font-weight: 500;
+        }
+ 
+        .analysis-value {
+            color: #0d0d0d;
+        }
+ 
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                z-index: 100;
+                height: 100%;
+            }
+ 
+            .toggle-sidebar-btn {
+                display: flex !important;
+            }
+ 
+            .results-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 12px;
+            }
+ 
+            .result-item img {
+                height: 150px;
+            }
+ 
+            .user-message .message-wrapper {
+                margin-left: 20px;
+            }
+ 
+            .assistant-message .message-wrapper {
+                margin-right: 20px;
+            }
+        }
+ 
+        @media (min-width: 769px) {
+            .sidebar.hidden {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <button class="new-chat-btn" onclick="startNewChat()">
+            <span>➕</span>
+            <span>New Chat</span>
+        </button>
+ 
+        <div class="chat-history" id="chatHistory">
+            <!-- Chat history items will be inserted here -->
+        </div>
+ 
+        <div class="sidebar-footer">
+            Image Similarity Search
+        </div>
+    </div>
+ 
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header Bar -->
+        <div class="header-bar">
+            <button class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
+            <div class="header-title">Image Similarity Search</div>
+            <div class="header-actions">
+                <button class="clear-chat-btn" onclick="clearCurrentChat()" title="Clear chat">🗑️ Clear</button>
+            </div>
+        </div>
+ 
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-messages" id="chatMessages">
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-state-icon">🖼️</div>
+                    <div class="empty-state-title">Image Similarity Search</div>
+                    <div class="empty-state-text">
+                        Upload an image to find visually similar images from your database.
+                        <br>Click the upload button below to get started.
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+        <div class="input-area">
+            <div class="input-container">
+                <div class="file-input-wrapper">
+                    <button class="upload-btn" title="Upload image">📎</button>
+                    <input type="file" id="fileInput" accept="image/*">
+                </div>
+                <input
+                    type="text"
+                    class="text-input"
+                    id="textInput"
+                    placeholder="Search for images or describe what you're looking for..."
+                    onkeypress="handleSearchEnter(event)"
+                >
+                <button class="send-btn" id="sendBtn">↑</button>
+            </div>
+        </div>
+    </div>
+ 
+    <script>
+        // Configuration
+        const API_ENDPOINT = 'http://localhost:8000/search-similar-images';
+        const TEXT_SEARCH_ENDPOINT = 'http://localhost:8000/search-by-text';
+        const TOP_K = 10; // Number of similar images to retrieve
+ 
+        // State
+        let currentChatId = null;
+        let chats = {};
+        let selectedFile = null;
+ 
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChatsFromStorage();
+            renderChatHistory();
+        });
+ 
+        // File input handler
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                selectedFile = e.target.files[0];
+               
+                // Validate file
+                if (!selectedFile.type.startsWith('image/')) {
+                    showError('Please select a valid image file');
+                    selectedFile = null;
+                    return;
+                }
+ 
+                if (selectedFile.size > 50 * 1024 * 1024) {
+                    showError('Image size should be less than 50MB');
+                    selectedFile = null;
+                    return;
+                }
+ 
+                // Update text input to show filename
+                document.getElementById('textInput').value = selectedFile.name;
+            }
+        });
+ 
+        // Text input handler — use keydown and prevent default to ensure Enter works reliably
+        document.getElementById('textInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSendButton();
+            }
+        });
+ 
+        // Send button handler
+        document.getElementById('sendBtn').addEventListener('click', handleSendButton);
+
+        function handleSearchEnter(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSendButton();
+            }
+        }
+
+        function handleSendButton() {
+            if (selectedFile) {
+                uploadAndSearch();
+            } else {
+                const textInput = document.getElementById('textInput').value.trim();
+                if (textInput) {
+                    searchByText(textInput);
+                }
+            }
+        }
+ 
+        // Toggle sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+        }
+ 
+        // Start new chat
+        function startNewChat() {
+            currentChatId = generateId();
+            chats[currentChatId] = {
+                id: currentChatId,
+                title: 'New Search',
+                messages: [],
+                createdAt: new Date().toISOString()
+            };
+           
+            saveChatsToStorage();
+            renderChatHistory();
+            clearChatMessages();
+            showEmptyState();
+        }
+ 
+        // Load chat
+        function loadChat(chatId) {
+            currentChatId = chatId;
+            renderChatHistory();
+            renderChatMessages(chats[chatId].messages);
+        }
+ 
+        // Delete chat
+        function deleteChat(chatId, event) {
+            event.stopPropagation();
+           
+            if (confirm('Are you sure you want to delete this chat?')) {
+                delete chats[chatId];
+               
+                if (currentChatId === chatId) {
+                    currentChatId = null;
+                    clearChatMessages();
+                    showEmptyState();
+                }
+               
+                saveChatsToStorage();
+                renderChatHistory();
+            }
+        }
+ 
+        // Clear current chat
+        function clearCurrentChat() {
+            if (!currentChatId) {
+                return;
+            }
+ 
+            if (confirm('Are you sure you want to clear all messages in this chat?')) {
+                chats[currentChatId].messages = [];
+                clearChatMessages();
+                showEmptyState();
+                saveChatsToStorage();
+            }
+        }
+ 
+        // Render chat history
+        function renderChatHistory() {
+            const historyContainer = document.getElementById('chatHistory');
+            const chatArray = Object.values(chats).sort((a, b) =>
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+ 
+            if (chatArray.length === 0) {
+                historyContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: #8e8ea0; font-size: 13px;">No chats yet</div>';
+                return;
+            }
+ 
+            historyContainer.innerHTML = chatArray.map(chat => {
+                const date = new Date(chat.createdAt);
+                const dateStr = formatDate(date);
+                const isActive = chat.id === currentChatId;
+
+                // Try to extract a thumbnail (data URL or image URL) from the chat messages
+                const thumb = getThumbnailForChat(chat);
+
+                return `
+                    <div class="history-item ${isActive ? 'active' : ''}" onclick="loadChat('${chat.id}')">
+                        <div style="width:48px; height:48px; margin-right:10px; flex-shrink:0;">
+                            ${thumb
+                                ? `<img src="${thumb}" alt="thumb" style="width:48px;height:48px;object-fit:cover;border-radius:6px;">`
+                                : `<div style="width:48px;height:48px;background:#f0f0f0;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#8e8ea0">🖼️</div>`}
+                        </div>
+                        <div class="history-item-content">
+                            <div class="history-item-title">${escapeHtml(chat.title)}</div>
+                            <div class="history-item-date">${dateStr}</div>
+                        </div>
+                        <div class="history-item-actions">
+                            <button class="delete-btn" onclick="deleteChat('${chat.id}', event)" title="Delete chat">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Helper: find a thumbnail image src in the chat messages (first user-uploaded image)
+        function getThumbnailForChat(chat) {
+            if (!chat || !Array.isArray(chat.messages)) return null;
+
+            for (let i = 0; i < chat.messages.length; i++) {
+                const m = chat.messages[i];
+                if (m && m.role === 'user' && typeof m.content === 'string') {
+                    // Look for an <img src="..."> inside the stored content
+                    const match = m.content.match(/<img[^>]+src=["']([^"']+)["'][^>]*>/i);
+                    if (match && match[1]) {
+                        return match[1];
+                    }
+                }
+            }
+
+            return null;
+        }
+ 
+        // Render chat messages
+        function renderChatMessages(messages) {
+            const emptyState = document.getElementById('emptyState');
+            const chatMessages = document.getElementById('chatMessages');
+           
+            emptyState.style.display = 'none';
+           
+            // Clear existing messages except empty state
+            while (chatMessages.children.length > 1) {
+                chatMessages.removeChild(chatMessages.lastChild);
+            }
+ 
+            messages.forEach(msg => {
+                addMessageToDOM(msg);
+            });
+ 
+            scrollToBottom();
+        }
+ 
+        // Add message to DOM
+        function addMessageToDOM(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${message.role}-message`;
+           
+            let icon = message.role === 'user' ? '👤' : '🤖';
+            let label = message.role === 'user' ? 'You' : 'Assistant';
+           
+            messageDiv.innerHTML = `
+                <div class="message-wrapper">
+                    <div class="message-label">
+                        <span>${icon}</span>
+                        <span>${label}</span>
+                    </div>
+                    <div class="message-content">${message.content}</div>
+                </div>
+            `;
+
+            // If the message content is only an <img ...>, remove the bubble so image displays cleanly
+            try {
+                const contentTrim = (message.content || '').trim();
+                const isOnlyImg = /^<img[^>]+>$/i.test(contentTrim);
+                if (isOnlyImg) {
+                    const wrapper = messageDiv.querySelector('.message-wrapper');
+                    if (wrapper) wrapper.classList.add('no-bubble');
+                    
+                    // If user message with image, wrap in a card with filename
+                    if (message.role === 'user' && message.filename) {
+                        const contentDiv = messageDiv.querySelector('.message-content');
+                        const card = document.createElement('div');
+                        card.className = 'uploaded-image-card';
+                        card.innerHTML = contentDiv.innerHTML + 
+                            `<div class="uploaded-image-filename">${escapeHtml(message.filename)}</div>`;
+                        contentDiv.innerHTML = '';
+                        contentDiv.appendChild(card);
+                    }
+                }
+            } catch (e) {
+                // ignore
+            }
+           
+            chatMessages.appendChild(messageDiv);
+        }
+ 
+        // Upload and search
+        async function uploadAndSearch() {
+            if (!selectedFile) return;
+ 
+            // Create new chat if needed
+            if (!currentChatId) {
+                startNewChat();
+            }
+ 
+            // Hide empty state
+            document.getElementById('emptyState').style.display = 'none';
+ 
+            // Show user message with uploaded image
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const userMessage = {
+                    role: 'user',
+                    content: `<img src="${e.target.result}" class="uploaded-image" alt="Uploaded image">`,
+                    filename: selectedFile.name
+                };
+               
+                chats[currentChatId].messages.push(userMessage);
+                addMessageToDOM(userMessage);
+                updateChatTitle(selectedFile.name);
+                
+                // Scroll to bottom after image is rendered
+                setTimeout(() => {
+                    scrollToBottom();
+                }, 100);
+            };
+            reader.readAsDataURL(selectedFile);
+ 
+            // Show loading message
+            const loadingMessage = {
+                role: 'assistant',
+                content: `
+                    <div class="loading" style="justify-content: center; padding: 8px;">
+                        <div class="loading-dots">
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                        </div>
+                    </div>
+                `,
+                isLoading: true
+            };
+           
+            chats[currentChatId].messages.push(loadingMessage);
+            addMessageToDOM(loadingMessage);
+            scrollToBottom();
+ 
+            try {
+                // Send to backend
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+ 
+                const response = await fetch(`${API_ENDPOINT}?top_k=${TOP_K}`, {
+                    method: 'POST',
+                    body: formData
+                });
+ 
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+ 
+                const data = await response.json();
+ 
+                // Remove loading message
+                chats[currentChatId].messages = chats[currentChatId].messages.filter(m => !m.isLoading);
+                renderChatMessages(chats[currentChatId].messages);
+ 
+                // Show results
+                displayResults(data);
+ 
+            } catch (error) {
+                console.error('Error:', error);
+               
+                // Remove loading message
+                chats[currentChatId].messages = chats[currentChatId].messages.filter(m => !m.isLoading);
+                renderChatMessages(chats[currentChatId].messages);
+               
+                const errorMessage = {
+                    role: 'assistant',
+                    content: `
+                        <div class="error-message">
+                            Failed to search for similar images. Please check your backend connection.
+                            <br><br>Error: ${escapeHtml(error.message)}
+                        </div>
+                    `
+                };
+               
+                chats[currentChatId].messages.push(errorMessage);
+               
+                // Re-render to remove loading
+                renderChatMessages(chats[currentChatId].messages);
+            }
+ 
+            // Reset file input and text input
+            selectedFile = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('textInput').value = '';
+           
+            saveChatsToStorage();
+        }
+ 
+        // Search by text description
+        async function searchByText(query) {
+            if (!query.trim()) return;
+ 
+            // Create new chat if needed
+            if (!currentChatId) {
+                startNewChat();
+            }
+ 
+            // Hide empty state
+            document.getElementById('emptyState').style.display = 'none';
+ 
+            // Show user message with text query
+            const userMessage = {
+                role: 'user',
+                content: escapeHtml(query)
+            };
+           
+            chats[currentChatId].messages.push(userMessage);
+            addMessageToDOM(userMessage);
+            updateChatTitle(query);
+            
+            // Scroll to message
+            scrollToBottom();
+ 
+            // Show loading message
+            const loadingMessage = {
+                role: 'assistant',
+                content: `
+                    <div class="loading" style="justify-content: center; padding: 8px;">
+                        <div class="loading-dots">
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                            <div class="loading-dot"></div>
+                        </div>
+                    </div>
+                `,
+                isLoading: true
+            };
+           
+            chats[currentChatId].messages.push(loadingMessage);
+            addMessageToDOM(loadingMessage);
+            scrollToBottom();
+ 
+            try {
+                // Send text search to backend (use GET /search-by-text)
+                const url = `${TEXT_SEARCH_ENDPOINT}?query=${encodeURIComponent(query)}&top_k=${TOP_K}`;
+                const response = await fetch(url, { method: 'GET' });
+ 
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+ 
+                const data = await response.json();
+
+                // Normalize response to match displayResults expectations
+                // backend /search-by-text returns { search_results: [...], total_results, query }
+                const normalized = {
+                    uploaded_image: {
+                        filename: query,
+                        blob_url: '',
+                        file_size: 0,
+                        analysis: { description: query },
+                        analyzed_at: new Date().toISOString()
+                    },
+                    search_results: {
+                        total_candidates_from_vector_search: data.total_results || 0,
+                        total_truly_similar_after_validation: data.total_results || 0,
+                        similar_images: (Array.isArray(data.search_results) ? data.search_results : []),
+                        llm_validation_summary: data.llm_validation_summary || '',
+                        validation_status: data.validation_status || ''
+                    }
+                };
+
+                // Remove loading message
+                chats[currentChatId].messages = chats[currentChatId].messages.filter(m => !m.isLoading);
+                renderChatMessages(chats[currentChatId].messages);
+
+                // Show results
+                displayResults(normalized);
+ 
+            } catch (error) {
+                console.error('Error:', error);
+               
+                // Remove loading message
+                chats[currentChatId].messages = chats[currentChatId].messages.filter(m => !m.isLoading);
+                renderChatMessages(chats[currentChatId].messages);
+               
+                const errorMessage = {
+                    role: 'assistant',
+                    content: `
+                        <div class="error-message">
+                            Failed to search images. Please upload an image for similarity search.
+                            <br><br>Error: ${escapeHtml(error.message)}
+                        </div>
+                    `
+                };
+               
+                chats[currentChatId].messages.push(errorMessage);
+               
+                // Re-render to remove loading
+                renderChatMessages(chats[currentChatId].messages);
+            }
+ 
+            // Reset text input
+            document.getElementById('textInput').value = '';
+           
+            saveChatsToStorage();
+        }
+ 
+        // Display results
+        function displayResults(data) {
+            const uploadedImage = data.uploaded_image;
+            const searchResults = data.search_results;
+            const similarImages = searchResults.similar_images || [];
+            const trulyRelevant = searchResults.total_truly_similar_after_validation || 0;
+ 
+            let resultsHTML = '';
+ 
+            // Show search results summary
+            resultsHTML += `<p style="margin-bottom: 16px; color: #0d0d0d; font-size: 14px;">🔍 Found <strong>${trulyRelevant}</strong> similar image${trulyRelevant !== 1 ? 's' : ''}:</p>`;
+ 
+            if (similarImages.length === 0) {
+                resultsHTML += '<p style="margin-top: 12px; color: #8e8ea0;">No similar images found in the database.</p>';
+            } else {
+                resultsHTML += '<div class="results-grid">';
+ 
+                similarImages.forEach((image) => {
+                    const imageUrl = image.image_url || image.url || '';
+                    const similarity = Math.round((image.similarity_score || image.score || 0) * 100);
+                    const relevanceScore = Math.round((image.llm_relevance_score || 0) * 100);
+                    const isTrulySimilar = image.is_truly_similar || false;
+                    const filename = image.image_id || image.filename || 'Unknown';
+                    const description = image.summary || 'No description available';
+                   
+                    const borderColor = isTrulySimilar ? '#10a37f' : '#565869';
+ 
+                    resultsHTML += `
+                        <div class="result-item" style="border-color: ${borderColor};">
+                            <img src="${escapeHtml(imageUrl)}" alt="Similar image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23343541%22 width=%22200%22 height=%22200%22/%3E%3Ctext fill=%22%238e8ea0%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2212%22%3ENo image%3C/text%3E%3C/svg%3E'">
+                            <div class="result-info">
+                                <div style="font-size: 11px; color: #8a8779; margin-top: 8px;"><span class="similarity-score">${similarity}%</span> match • <span class="similarity-score">${relevanceScore}%</span> relevant</div>
+                                ${isTrulySimilar ? '<div style="color: #10a37f; margin-top: 4px; font-size: 12px;">✓ Truly Similar</div>' : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+ 
+                resultsHTML += '</div>';
+            }
+ 
+            const resultMessage = {
+                role: 'assistant',
+                content: resultsHTML
+            };
+ 
+            chats[currentChatId].messages.push(resultMessage);
+            addMessageToDOM(resultMessage);
+            
+            // Scroll to bottom with a small delay to ensure images start loading
+            setTimeout(() => {
+                scrollToBottom();
+            }, 100);
+            
+            saveChatsToStorage();
+        }
+ 
+        // Update chat title
+        function updateChatTitle(filename) {
+            if (currentChatId && chats[currentChatId].title === 'New Search') {
+                chats[currentChatId].title = `Search: ${filename.substring(0, 30)}${filename.length > 30 ? '...' : ''}`;
+                renderChatHistory();
+            }
+        }
+ 
+        // Show error
+        function showError(message) {
+            if (!currentChatId) {
+                startNewChat();
+            }
+ 
+            const errorMessage = {
+                role: 'assistant',
+                content: `<div class="error-message">${escapeHtml(message)}</div>`
+            };
+ 
+            chats[currentChatId].messages.push(errorMessage);
+            addMessageToDOM(errorMessage);
+            saveChatsToStorage();
+        }
+ 
+        // Clear chat messages
+        function clearChatMessages() {
+            const chatMessages = document.getElementById('chatMessages');
+            while (chatMessages.children.length > 1) {
+                chatMessages.removeChild(chatMessages.lastChild);
+            }
+        }
+ 
+        // Show empty state
+        function showEmptyState() {
+            document.getElementById('emptyState').style.display = 'block';
+        }
+ 
+        // Scroll to bottom
+        function scrollToBottom() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+ 
+        // Storage functions
+        function saveChatsToStorage() {
+            try {
+                localStorage.setItem('imageSearchChats', JSON.stringify(chats));
+            } catch (e) {
+                console.error('Failed to save chats:', e);
+            }
+        }
+ 
+        function loadChatsFromStorage() {
+            try {
+                const stored = localStorage.getItem('imageSearchChats');
+                if (stored) {
+                    chats = JSON.parse(stored);
+                }
+            } catch (e) {
+                console.error('Failed to load chats:', e);
+                chats = {};
+            }
+        }
+ 
+        // Utility functions
+        function generateId() {
+            return 'chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+ 
+        function formatDate(date) {
+            const now = new Date();
+            const diff = now - date;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+ 
+            if (days === 0) {
+                return 'Today';
+            } else if (days === 1) {
+                return 'Yesterday';
+            } else if (days < 7) {
+                return `${days} days ago`;
+            } else {
+                return date.toLocaleDateString();
+            }
+        }
+ 
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
