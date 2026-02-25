@@ -1,0 +1,34 @@
+# FastAPI and Server
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+python-multipart==0.0.6
+pydantic==2.7.0
+pydantic-settings==2.2.0
+
+# Azure Services
+azure-storage-blob==12.21.0
+azure-search-documents==11.4.0
+azure-identity==1.15.0
+azure-keyvault-secrets==4.7.0
+
+# AI and Embeddings
+openai==1.3.0
+
+# Image Processing
+Pillow==11.0.0
+opencv-python==4.9.0.80
+
+# HTTP and Async
+requests==2.31.0
+aiohttp==3.9.1
+httpx==0.26.0
+
+# Utilities
+python-dotenv==1.0.0
+python-dateutil==2.8.2
+numpy==1.24.3
+
+# Development Tools
+python-json-logger==2.0.7
+typing-extensions==4.10.0
+
